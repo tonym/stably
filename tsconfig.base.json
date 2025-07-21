@@ -15,8 +15,8 @@
     "noImplicitAny": true,
     "outDir": "dist",
     "paths": {
-      "@prompt-ui/core": ["packages/core/dist"],
-      "@prompt-ui/tokens": ["packages/tokens/dist"]
+      "@stably/core": ["packages/core/dist"],
+      "@stably/utils": ["packages/utils/dist"]
     },
     "skipLibCheck": true,
     "strict": true,

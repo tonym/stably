@@ -9,12 +9,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "turbo run build",
     "dev": "turbo run dev",
-    "build": "turbo run build"
+    "lint": "turbo run lint",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.9.0",
   "devDependencies": {
     "eslint": "^9.31.0",
