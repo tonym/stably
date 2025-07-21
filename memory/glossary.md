@@ -1,5 +1,3 @@
-
-
 # Glossary
 
 This file defines shared terms and domain-specific vocabulary used by agents.

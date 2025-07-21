@@ -10,20 +10,34 @@ Each agent consists of:
 - **Interface**: The external trigger (e.g. user message, system event)
 
 ## Agent Roles
-- **Interpreter**: Parses input, infers intent, forwards to core agents.
-- **Planner**: Breaks down goals into executable tasks.
-- **Executor**: Performs or simulates action (e.g., API call, text generation).
-- **Summarizer**: Condenses memory into high-signal state.
+- **Interpreter**: Translates user input into structured intent.
+- **Planner**: Breaks down goals into discrete tasks and routes them to other agents.
+- **Executor**: Carries out tasks directly or simulates execution.
+- **Summarizer**: Distills memory or session history into concise summaries.
+- **Generic Agent**: A fallback or base agent used for templating or scaffolding.
 
 ## File Structure
-- `memory/prompts/` – Prompt scaffolds and generated snapshots
-  - `scaffolds/`: Prompt format templates for agent roles
-  - `generated/`: Last emitted prompts (for debug/log)
-- `memory/agent-memory.yaml` – Persistent long-term memory
-- `memory/agent-metrics.yaml` – Placeholder for structured metrics or logs
-- `memory/preferences.md` – Style and tone preferences
-- `memory/project-context.md` – Current task or session memory
-- `memory/glossary.md` – Shared terms and vocabulary
+- `memory/` – Top-level memory directory
+  - `prompts/` – Prompt scaffolds and generated snapshots
+    - `scaffolds/` – Prompt format templates for agent roles
+    - `generated/` – Last emitted prompts (for debug/log)
+  - `agent-memory.yaml` – Persistent long-term memory
+  - `agent-metrics.yaml` – Placeholder for structured metrics or logs
+  - `preferences.md` – Style and tone preferences
+  - `project-context.md` – Current task or session memory
+  - `glossary.md` – Shared terms and vocabulary
 - `AGENTS.md` – This system overview document
+
+## Examples
+
+### Updating long-term memory
+A summarizer agent may append to `memory.yaml` like so:
+
+```yaml
+summaries:
+  - date: 2025-07-21
+    topic: "planner output"
+    content: "Planner decomposed user goal into 3 executable tasks."
+
 ## Status
 🟡 Placeholder structure complete — logic under development.

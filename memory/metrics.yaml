@@ -1,0 +1,10 @@
+# Structured event log or performance metrics for agents
+# Each entry can record a timestamped event
+
+logs:
+  - timestamp: '2025-07-21T10:15:00Z'
+    agent: summarizer
+    event: 'summary generated'
+    input_size: 274
+    output_size: 48
+    confidence: 0.91

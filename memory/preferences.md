@@ -1,5 +1,3 @@
-
-
 # Preferences
 
 Guidelines for tone, verbosity, formality, and interaction style.

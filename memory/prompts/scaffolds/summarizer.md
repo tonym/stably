@@ -1,5 +1,3 @@
-
-
 # Prompt Scaffold – Summarizer Agent
 
 ```
