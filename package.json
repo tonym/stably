@@ -17,6 +17,8 @@
   "license": "ISC",
   "packageManager": "pnpm@10.9.0",
   "devDependencies": {
-    "turbo": "^2.5.5"
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.5",
+    "typescript": "^5.8.3"
   }
 }
