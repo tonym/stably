@@ -24,6 +24,12 @@ importers:
         specifier: ^8.37.0
         version: 8.37.0(eslint@9.31.0)(typescript@5.8.3)
 
+  examples/chatbot: {}
+
+  packages/core: {}
+
+  packages/utils: {}
+
 packages:
 
   '@eslint-community/eslint-utils@4.7.0':
