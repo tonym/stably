@@ -1,0 +1,10 @@
+{
+  "name": "@stably/chatbot",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc"
+  }
+}
