@@ -6,6 +6,7 @@ It explores a pattern where agents:
 - Operate as composable generators
 - Construct prompts dynamically from contract definitions and memory state
 - Maintain persistent memory, context, and preferences via a structured file system
+- Yield intermediate steps to stabilize execution and create guardrails between agent phases
 
 ## Folder Structure
 
