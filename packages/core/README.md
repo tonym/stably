@@ -64,21 +64,71 @@ A *pipeline contract* defines:
 Example:
 
 ```ts
-export interface StorefrontPipelineContract
-  extends StablyContract<StorefrontAction> {
-  id: 'storefront.docsPipeline';
+export const storefrontContract: StablyContract<StorefrontAction> = {
+  id: 'storefront.docsPipeline',
   steps: [
     { id: 'generateDocs', actionType: 'prism.generateDocs' },
     { id: 'verifyContracts', actionType: 'prism.verifyContracts' }
-  ];
+  ],
   structural: {
-    requiredSteps: ['generateDocs', 'verifyContracts'];
-    allowedActionTypes: ['prism.generateDocs', 'prism.verifyContracts'];
+    requiredSteps: ['generateDocs', 'verifyContracts'],
+    allowedActionTypes: [
+      'prism.generateDocs',
+      'prism.verifyContracts'
+    ]
+  }
+};
+```
+
+The contract enforces **structure**, not semantics.
+
+---
+
+### Typing Your Contract (Recommended Pattern)
+
+While you can type your contract directly using `StablyContract<TAction>`, we recommend defining a **local domain interface** that extends it. This keeps your domain loosely coupled to Stably while still benefiting from strong type-checking.
+
+**Example:**
+
+```ts
+// domain/contract.ts
+export interface StorefrontPipelineContract
+  extends StablyContract<StorefrontAction> {
+  domain: 'storefront';
+  // Optional: domain-specific metadata or extensions
+  metadata?: {
+    description?: string;
+    version?: string;
   };
 }
 ```
 
-The contract enforces **structure**, not semantics.
+Then create your contract as a **runtime object**:
+
+```ts
+export const storefrontContract: StorefrontPipelineContract = {
+  id: 'storefront.docsPipeline',
+
+  steps: [
+    { id: 'generateDocs', actionType: 'prism.generateDocs' },
+    { id: 'verifyContracts', actionType: 'prism.verifyContracts' }
+  ],
+
+  structural: {
+    requiredSteps: ['generateDocs', 'verifyContracts'],
+    allowedActionTypes: [
+      'prism.generateDocs',
+      'prism.verifyContracts'
+    ]
+  }
+};
+```
+
+This pattern ensures:
+
+* Your **domain owns its contract shape**, including metadata or extensions.
+* Stably is used strictly as a **validator and generator substrate**, not as the source of truth for your domain’s modeling.
+* Contracts remain **runtime JSON objects**, preventing drift and ensuring they can be validated deterministically.
 
 ---
 
