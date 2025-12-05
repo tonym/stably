@@ -208,6 +208,36 @@ When adding or changing functionality in `packages/core`:
     3. `generate()` and iterate.
     4. Orchestrator delegates to workers and evals.
 
+### 7.x Test Conventions (Required)
+
+All codegen agents MUST follow these testing rules:
+
+1. **One expectation per test**  
+   Each `it(...)` block must contain exactly one assertion.  
+   This keeps failures isolated and makes intent unambiguous.
+
+2. **Table tests are allowed**  
+   When multiple inputs must be exercised, use table-driven tests:  
+   - Each row represents one test case.  
+   - Each row still maps to a single expectation.
+
+3. **Only add or modify tests for code that was generated or changed**  
+   Agents must not update unrelated test files.  
+   This enforces PR boundaries and prevents accidental broad edits.
+
+4. **All tests must pass**  
+   Generated code MUST be written such that the full test suite would pass if executed.  
+   Agents must avoid introducing:  
+   - undefined variables  
+   - unused imports  
+   - broken types  
+   - failing logic or regressions
+
+5. **Tests must remain deterministic**  
+   No randomness, time-based behavior, external I/O, or nondeterministic ordering.
+
+These rules ensure that codegen remains safe, reviewable, and tightly scoped to the intended changes.
+
 ---
 
 ## 8. Interaction with AGENTS/ROOT.md
