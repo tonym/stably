@@ -92,7 +92,7 @@ While you can type your contract directly using `StablyContract<TAction>`, we re
 // domain/contract.ts
 export interface UICorePipelineContract
   extends StablyContract<UICoreAction> {
-  domain: 'ui-core';
+  domain: 'prism.ui-core';
   // Optional: domain-specific metadata or extensions
   metadata?: {
     description?: string;
@@ -105,18 +105,18 @@ Then create your contract as a **runtime object**:
 
 ```ts
 export const uiCoreContract: UICorePipelineContract = {
-  id: 'ui-core.docsPipeline',
+  id: 'prism.ui-core.docsPipeline',
 
   steps: [
-    { id: 'generateDocs', actionType: 'prism.generateDocs' },
-    { id: 'verifyContracts', actionType: 'prism.verifyContracts' }
+    { id: 'generateDocs', actionType: 'prism.ui-core.generateDocs' },
+    { id: 'verifyContracts', actionType: 'prism.ui-core.verifyContracts' }
   ],
 
   structural: {
     requiredSteps: ['generateDocs', 'verifyContracts'],
     allowedActionTypes: [
-      'prism.generateDocs',
-      'prism.verifyContracts'
+      'prism.ui-core.generateDocs',
+      'prism.ui-core.verifyContracts'
     ]
   }
 };
@@ -228,8 +228,8 @@ import {
 } from '@stably/core';
 
 import type {
-  UICoreAction,
-  UICorePipelineContract
+  uiCoreAction,
+  uiCorePipelineContract
 } from '@prism/ui-core';
 
 declare const uiCoreContract: UICorePipelineContract;
