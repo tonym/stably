@@ -44,8 +44,8 @@ yarn add @stably/core
 A *pipeline action* is a simple domain-defined object with at minimum a `type` field.
 
 ```ts
-export interface StorefrontAction {
-  type: 'prism.generateDocs' | 'prism.verifyContracts';
+export interface uiCoreAction {
+  type: 'prism.ui-core.generateDocs' | 'prism.ui-core.verifyContracts';
   payload: { component: string };
 }
 ```
@@ -64,17 +64,17 @@ A *pipeline contract* defines:
 Example:
 
 ```ts
-export const storefrontContract: StablyContract<StorefrontAction> = {
-  id: 'storefront.docsPipeline',
+export const uiCoreContract: StablyContract<UICoreAction> = {
+  id: 'prism.ui-core.docsPipeline',
   steps: [
-    { id: 'generateDocs', actionType: 'prism.generateDocs' },
-    { id: 'verifyContracts', actionType: 'prism.verifyContracts' }
+    { id: 'generateDocs', actionType: 'prism.ui-core.generateDocs' },
+    { id: 'verifyContracts', actionType: 'prism.ui-core.verifyContracts' }
   ],
   structural: {
     requiredSteps: ['generateDocs', 'verifyContracts'],
     allowedActionTypes: [
-      'prism.generateDocs',
-      'prism.verifyContracts'
+      'prism.ui-core.generateDocs',
+      'prism.ui-core.verifyContracts'
     ]
   }
 };
@@ -90,9 +90,9 @@ While you can type your contract directly using `StablyContract<TAction>`, we re
 
 ```ts
 // domain/contract.ts
-export interface StorefrontPipelineContract
-  extends StablyContract<StorefrontAction> {
-  domain: 'storefront';
+export interface UICorePipelineContract
+  extends StablyContract<UICoreAction> {
+  domain: 'ui-core';
   // Optional: domain-specific metadata or extensions
   metadata?: {
     description?: string;
@@ -104,8 +104,8 @@ export interface StorefrontPipelineContract
 Then create your contract as a **runtime object**:
 
 ```ts
-export const storefrontContract: StorefrontPipelineContract = {
-  id: 'storefront.docsPipeline',
+export const uiCoreContract: UICorePipelineContract = {
+  id: 'ui-core.docsPipeline',
 
   steps: [
     { id: 'generateDocs', actionType: 'prism.generateDocs' },
@@ -137,7 +137,7 @@ This pattern ensures:
 Validates a full array of actions (a **pipeline instance**) against a **StablyContract**.
 
 ```ts
-const result = validatePipeline(actions, storefrontContract);
+const result = validatePipeline(actions, uiCoreContract);
 
 if (!result.ok) {
   console.error(result.errors);
@@ -164,7 +164,7 @@ Validates a **single** action against the pipeline contract.
 Useful inside an orchestrator loop as a lightweight local guard.
 
 ```ts
-const check = validateAction(action, storefrontContract);
+const check = validateAction(action, uiCoreContract);
 
 if (!check.ok) {
   console.error(check.errors);
@@ -204,7 +204,7 @@ Important notes:
 Optional ergonomic helper for preloading the contract:
 
 ```ts
-const validator = createValidator(storefrontContract);
+const validator = createValidator(uiCoreContract);
 
 validator.validatePipeline(actions);
 validator.validateAction(action);
@@ -228,20 +228,20 @@ import {
 } from '@stably/core';
 
 import type {
-  StorefrontAction,
-  StorefrontPipelineContract
-} from '@prism/storefront';
+  UICoreAction,
+  UICorePipelineContract
+} from '@prism/ui-core';
 
-declare const storefrontContract: StorefrontPipelineContract;
+declare const uiCoreContract: UICorePipelineContract;
 
 // 1. Build a pipeline instance
-const actions: StablyAction<StorefrontAction>[] = [
-  { type: 'prism.generateDocs', payload: { component: 'Button' } },
-  { type: 'prism.verifyContracts', payload: { component: 'Button' } }
+const actions: StablyAction<UICoreAction>[] = [
+  { type: 'prism.ui-core.generateDocs', payload: { component: 'Button' } },
+  { type: 'prism.ui-core.verifyContracts', payload: { component: 'Button' } }
 ];
 
 // 2. Validate the entire pipeline instance
-const structural = validatePipeline(actions, storefrontContract);
+const structural = validatePipeline(actions, uiCoreContract);
 if (!structural.ok) throw new Error(structural.errors.join('\n'));
 
 // 3. Generate a deterministic generator
@@ -253,7 +253,7 @@ while (!current.done) {
   const action = current.value;
 
   // optional: validate per action
-  const perAction = validateAction(action, storefrontContract);
+  const perAction = validateAction(action, uiCoreContract);
   if (!perAction.ok) throw new Error(perAction.errors.join('\n'));
 
   // delegate to worker, run evals, etc.
