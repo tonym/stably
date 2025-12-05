@@ -44,8 +44,8 @@ yarn add @stably/core
 A *pipeline action* is a simple domain-defined object with at minimum a `type` field.
 
 ```ts
-export interface uiCoreAction {
-  type: 'prism.ui-core.generateDocs' | 'prism.ui-core.verifyContracts';
+export interface UICoreAction {
+  type: 'uiCore.generateDocs' | 'uiCore.verifyContracts';
   payload: { component: string };
 }
 ```
@@ -65,16 +65,16 @@ Example:
 
 ```ts
 export const uiCoreContract: StablyContract<UICoreAction> = {
-  id: 'prism.ui-core.docsPipeline',
+  id: 'uiCore.docsPipeline',
   steps: [
-    { id: 'generateDocs', actionType: 'prism.ui-core.generateDocs' },
-    { id: 'verifyContracts', actionType: 'prism.ui-core.verifyContracts' }
+    { id: 'generateDocs', actionType: 'uiCore.generateDocs' },
+    { id: 'verifyContracts', actionType: 'uiCore.verifyContracts' }
   ],
   structural: {
     requiredSteps: ['generateDocs', 'verifyContracts'],
     allowedActionTypes: [
-      'prism.ui-core.generateDocs',
-      'prism.ui-core.verifyContracts'
+      'uiCore.generateDocs',
+      'uiCore.verifyContracts'
     ]
   }
 };
@@ -92,7 +92,7 @@ While you can type your contract directly using `StablyContract<TAction>`, we re
 // domain/contract.ts
 export interface UICorePipelineContract
   extends StablyContract<UICoreAction> {
-  domain: 'prism.ui-core';
+  domain: 'uiCore';
   // Optional: domain-specific metadata or extensions
   metadata?: {
     description?: string;
@@ -105,18 +105,18 @@ Then create your contract as a **runtime object**:
 
 ```ts
 export const uiCoreContract: UICorePipelineContract = {
-  id: 'prism.ui-core.docsPipeline',
+  id: 'uiCore.docsPipeline',
 
   steps: [
-    { id: 'generateDocs', actionType: 'prism.ui-core.generateDocs' },
-    { id: 'verifyContracts', actionType: 'prism.ui-core.verifyContracts' }
+    { id: 'generateDocs', actionType: 'uiCore.generateDocs' },
+    { id: 'verifyContracts', actionType: 'uiCore.verifyContracts' }
   ],
 
   structural: {
     requiredSteps: ['generateDocs', 'verifyContracts'],
     allowedActionTypes: [
-      'prism.ui-core.generateDocs',
-      'prism.ui-core.verifyContracts'
+      'uiCore.generateDocs',
+      'uiCore.verifyContracts'
     ]
   }
 };
@@ -230,14 +230,14 @@ import {
 import type {
   uiCoreAction,
   uiCorePipelineContract
-} from '@prism/ui-core';
+} from '@prism/uiCore';
 
 declare const uiCoreContract: UICorePipelineContract;
 
 // 1. Build a pipeline instance
 const actions: StablyAction<UICoreAction>[] = [
-  { type: 'prism.ui-core.generateDocs', payload: { component: 'Button' } },
-  { type: 'prism.ui-core.verifyContracts', payload: { component: 'Button' } }
+  { type: 'prism.uiCore.generateDocs', payload: { component: 'Button' } },
+  { type: 'prism.uiCore.verifyContracts', payload: { component: 'Button' } }
 ];
 
 // 2. Validate the entire pipeline instance
