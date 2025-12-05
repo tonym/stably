@@ -82,8 +82,6 @@ export const storefrontContract: StablyContract<StorefrontAction> = {
 
 The contract enforces **structure**, not semantics.
 
----
-
 ### Typing Your Contract (Recommended Pattern)
 
 While you can type your contract directly using `StablyContract<TAction>`, we recommend defining a **local domain interface** that extends it. This keeps your domain loosely coupled to Stably while still benefiting from strong type-checking.
