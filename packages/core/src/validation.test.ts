@@ -100,6 +100,37 @@ describe('validatePipeline', () => {
 
     expect(result).toEqual({ ok: true, errors: [] });
   });
+
+  it('treats an empty pipeline as ok when no structural rules require steps', () => {
+    const contract: StablyContract<SampleAction> = {
+      id: 'empty-allowed',
+      steps: [
+        { id: 's1', actionType: 'start' },
+        { id: 's2', actionType: 'end' }
+      ]
+      // no structural.requiredSteps, no allowedActionTypes
+    };
+
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([], contract);
+
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
+
+  it('allows required steps to appear multiple times', () => {
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
+      [
+        { type: 'start' },
+        { type: 'middle' },
+        { type: 'start' },
+        { type: 'end' },
+        { type: 'end' }
+      ],
+      baseContract
+    );
+
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
+
 });
 
 describe('validateAction', () => {
@@ -139,6 +170,30 @@ describe('validateAction', () => {
 
     expect(result).toEqual({ ok: false, errors: ['No contract step found for action type "end".'] });
   });
+
+  it('can accumulate both disallowed-type and missing-step errors', () => {
+    const contractWithLimits: StablyContract<SampleAction> = {
+      ...baseContract,
+      steps: [{ id: 's1', actionType: 'start' }], // drops 'end' step
+      structural: {
+        ...baseContract.structural,
+        allowedActionTypes: ['start'] // end is disallowed
+      }
+    };
+
+    const result = validateAction<SampleAction, StablyContract<SampleAction>>(
+      { type: 'end' },
+      contractWithLimits
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      errors: [
+        'Action has disallowed type "end".',
+        'No contract step found for action type "end".'
+      ]
+    });
+  });
 });
 
 describe('createValidator', () => {
@@ -152,5 +207,25 @@ describe('createValidator', () => {
     expect(validator.validateAction({ type: 'start' })).toEqual(
       validateAction<SampleAction, StablyContract<SampleAction>>({ type: 'start' }, baseContract)
     );
+  });
+
+  it('does not mutate the provided contract instance', () => {
+    const original: StablyContract<SampleAction> = {
+      ...baseContract,
+      structural: {
+        ...(baseContract.structural ?? {}),
+        allowedActionTypes: [...(baseContract.structural?.allowedActionTypes ?? [])]
+      }
+    };
+
+    const snapshot = JSON.parse(JSON.stringify(original));
+
+    const validator = createValidator<SampleAction, StablyContract<SampleAction>>(original);
+
+    // Run both methods to ensure they don't modify the contract
+    validator.validatePipeline([{ type: 'start' }, { type: 'end' }]);
+    validator.validateAction({ type: 'start' });
+
+    expect(original).toEqual(snapshot);
   });
 });
