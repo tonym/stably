@@ -1,6 +1,6 @@
 // src/contract.ts
 
-import type { StablyBaseAction } from './base';
+import type { StablyBaseAction } from './base.types';
 
 // A single step definition in the contract.
 // It ties a logical step id to an actionType and optional flags Stably cares about.

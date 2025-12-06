@@ -1,7 +1,7 @@
 // src/validation.ts
 
-import type { StablyBaseAction, StablyAction, PipelineInstance } from './base';
-import type { StablyContract, StablyContractStep, StablyStructuralRules } from './contract';
+import type { StablyBaseAction, StablyAction, PipelineInstance } from './base.types';
+import type { StablyContract, StablyContractStep, StablyStructuralRules } from './contract.types';
 
 // Result types for validators.
 // You can later upgrade `errors: string[]` to richer diagnostics.

@@ -16,7 +16,7 @@
     "outDir": "dist",
     "paths": {
       "@stably/core": ["packages/core/dist"],
-      "@stably/utils": ["packages/utils/dist"]
+      "@stably/mcp": ["packages/mcp/dist"]
     },
     "skipLibCheck": true,
     "strict": true,

@@ -1,6 +1,6 @@
 // src/generate.ts
 
-import type { StablyBaseAction, StablyAction, StablyGenerator } from './base';
+import type { StablyBaseAction, StablyAction, StablyGenerator } from './base.types';
 
 // Core generator factory.
 // It takes an array of actions (a pipeline instance) and returns a generator.
