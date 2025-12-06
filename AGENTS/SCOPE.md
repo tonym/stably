@@ -119,6 +119,14 @@ They MUST NOT:
 
 Tests exist to reflect code changes, not vice-versa.
 
+### 4.1 Regression test scope
+
+- Test changes are in scope only when they:
+  - Directly exercise the behavior this task is fixing or adding, and
+  - Are located in the same logical package/domain as the code change.
+- It is acceptable for a focused regression test to target previously untested code **when** the test exists solely to reproduce or guard the bug being fixed.
+- Any broader test additions or refactors remain out of scope and MUST trigger escalation under AGENTS/ESCALATION.md.
+
 ---
 
 ## 5. Scope of Refactors  
