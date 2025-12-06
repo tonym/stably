@@ -1,4 +1,4 @@
-// src/contract.ts
+// src/contract.types.ts
 
 import type { StablyBaseAction } from './base.types';
 
@@ -38,3 +38,4 @@ export interface StablyContract<TAction extends StablyBaseAction = StablyBaseAct
   transitions?: readonly StablyTransitionRule[];
   structural?: StablyStructuralRules;
 }
+
