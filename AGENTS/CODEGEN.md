@@ -190,6 +190,18 @@ Whenever codegen introduces new behavior or modifies existing behavior:
 
 Documentation must be **consistent with the actual behavior** of the code.
 
+### 6.5 Refactors (Explicit Only)
+
+- Codegen agents MUST treat refactors as **opt-in, explicit tasks**, not as a default freedom.
+- A change may only be classified as a refactor when:
+  - The human task description explicitly calls it a refactor (or a mechanical rename/extraction), and
+  - The change is allowed under AGENTS/SCOPE.md for the current task.
+- If there is any ambiguity about whether a change counts as a refactor or is in scope, the agent MUST:
+  - STOP the refactor,
+  - ESCALATE per AGENTS/ESCALATION.md, and
+  - WAIT for a clarified human instruction before proceeding.
+- Under no circumstances may CODEGEN agents introduce opportunistic refactors “while making other changes.”
+
 ---
 
 ## 7. Tests and Examples
@@ -208,7 +220,7 @@ When adding or changing functionality in `packages/core`:
     3. `generate()` and iterate.
     4. Orchestrator delegates to workers and evals.
 
-### 7.x Test Conventions (Required)
+### 7.1 Test Conventions (Required)
 
 All codegen agents MUST follow these testing rules:
 
@@ -237,6 +249,20 @@ All codegen agents MUST follow these testing rules:
    No randomness, time-based behavior, external I/O, or nondeterministic ordering.
 
 These rules ensure that codegen remains safe, reviewable, and tightly scoped to the intended changes.
+
+### 7.2 Regression tests for bugfixes
+
+- The intent of the “only add or modify tests for code that was generated or changed” rule is **behavioral**, not strictly file-based.
+- When fixing a bug, agents MAY:
+  - Add or update tests in existing test files, or
+  - Create a small, focused new test file,
+  - Even if those tests exercise previously untested code,
+  - **Provided** the tests exist solely to reproduce and guard the behavior this PR fixes and live in the same package/domain.
+- Agents MUST NOT:
+  - Add broad new coverage unrelated to the bug’s behavior,
+  - Touch tests in other packages or domains “because they are nearby,” or
+  - Use a bugfix as an excuse to start large test refactors.
+- If a regression test requires touching tests beyond the immediate module and the agent cannot justify the change as strictly necessary for the bug’s behavior, it MUST escalate before proceeding.
 
 ---
 
