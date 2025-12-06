@@ -30,6 +30,17 @@ describe('validatePipeline', () => {
     expect(result).toEqual({ ok: true, errors: [] });
   });
 
+  it('treats missing structural rules as an empty object', () => {
+    const contract: StablyContract<SampleAction> = {
+      id: 'minimal',
+      steps: [{ id: 's1', actionType: 'start' }]
+    };
+
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }], contract);
+
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
+
   it('reports disallowed action types', () => {
     const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }, { type: 'other' }], baseContract);
 
@@ -66,11 +77,45 @@ describe('validatePipeline', () => {
 
     expect(result).toEqual({ ok: false, errors: ['Transition from step "s1" to "s3" is not allowed by the contract.'] });
   });
+
+  it('skips order-constraint errors when referenced steps never appear', () => {
+    const contractWithMissingOrderSteps: StablyContract<SampleAction> = {
+      id: 'order-skip',
+      steps: [
+        { id: 's1', actionType: 'start' },
+        { id: 's2', actionType: 'end' }
+      ],
+      structural: {
+        orderConstraints: [
+          { before: 's1', after: 'missing-step' },
+          { before: 'missing-before', after: 's2' }
+        ]
+      }
+    };
+
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
+      [{ type: 'start' }, { type: 'end' }],
+      contractWithMissingOrderSteps
+    );
+
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
 });
 
 describe('validateAction', () => {
   it('returns ok for actions present in the contract', () => {
     const result = validateAction<SampleAction, StablyContract<SampleAction>>({ type: 'start' }, baseContract);
+
+    expect(result).toEqual({ ok: true, errors: [] });
+  });
+
+  it('handles missing structural rules with no allowed types defined', () => {
+    const contract: StablyContract<SampleAction> = {
+      id: 'no-structural',
+      steps: [{ id: 's1', actionType: 'start' }]
+    };
+
+    const result = validateAction<SampleAction, StablyContract<SampleAction>>({ type: 'start' }, contract);
 
     expect(result).toEqual({ ok: true, errors: [] });
   });
@@ -102,6 +147,10 @@ describe('createValidator', () => {
 
     expect(validator.validatePipeline([{ type: 'start' }, { type: 'end' }])).toEqual(
       validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }, { type: 'end' }], baseContract)
+    );
+
+    expect(validator.validateAction({ type: 'start' })).toEqual(
+      validateAction<SampleAction, StablyContract<SampleAction>>({ type: 'start' }, baseContract)
     );
   });
 });
