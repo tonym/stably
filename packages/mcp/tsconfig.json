@@ -1,13 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2022",
-    "strict": true,
+    "outDir": "dist",
+    "moduleResolution": "Bundler", // intentional override
+    "target": "ES2022",            // intentional override
     "types": ["node"]
   },
   "include": ["src"],
