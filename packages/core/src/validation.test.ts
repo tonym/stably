@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { StablyContract } from './contract';
+import type { StablyContract } from './contract.types';
 import { createValidator, validateAction, validatePipeline } from './validation';
 
 type SampleAction = { type: 'start' | 'middle' | 'end' | 'other' };
