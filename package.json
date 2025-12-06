@@ -14,7 +14,7 @@
     "lint": "turbo run lint",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
-    "test": "vitest",
+    "test": "vitest --no-watch",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch"
   },

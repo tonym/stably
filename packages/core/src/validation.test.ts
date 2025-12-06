@@ -23,11 +23,7 @@ const baseContract: StablyContract<SampleAction> = {
 describe('validatePipeline', () => {
   it('marks a valid pipeline as ok', () => {
     const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
-      [
-        { type: 'start' },
-        { type: 'middle' },
-        { type: 'end' }
-      ],
+      [{ type: 'start' }, { type: 'middle' }, { type: 'end' }],
       baseContract
     );
 
@@ -35,34 +31,22 @@ describe('validatePipeline', () => {
   });
 
   it('reports disallowed action types', () => {
-    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
-      [
-        { type: 'start' },
-        { type: 'other' }
-      ],
-      baseContract
-    );
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }, { type: 'other' }], baseContract);
 
-    expect(result).toEqual({ ok: false, errors: ['Action at index 1 has disallowed type "other".'] });
+    expect(result).toEqual({
+      ok: false,
+      errors: ['Action at index 1 has disallowed type "other".', 'Required step "s3" does not appear in the pipeline instance.']
+    });
   });
 
   it('reports missing required steps', () => {
-    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
-      [{ type: 'start' }],
-      baseContract
-    );
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }], baseContract);
 
     expect(result).toEqual({ ok: false, errors: ['Required step "s3" does not appear in the pipeline instance.'] });
   });
 
   it('flags order constraint violations', () => {
-    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
-      [
-        { type: 'end' },
-        { type: 'start' }
-      ],
-      baseContract
-    );
+    const result = validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'end' }, { type: 'start' }], baseContract);
 
     expect(result).toEqual({ ok: false, errors: ['Order constraint violated: step "s1" must appear before "s3".'] });
   });
@@ -76,10 +60,7 @@ describe('validatePipeline', () => {
       ]
     };
     const result = validatePipeline<SampleAction, StablyContract<SampleAction>>(
-      [
-        { type: 'start' },
-        { type: 'end' }
-      ],
+      [{ type: 'start' }, { type: 'end' }],
       contractWithTransitions
     );
 
@@ -120,13 +101,7 @@ describe('createValidator', () => {
     const validator = createValidator<SampleAction, StablyContract<SampleAction>>(baseContract);
 
     expect(validator.validatePipeline([{ type: 'start' }, { type: 'end' }])).toEqual(
-      validatePipeline<SampleAction, StablyContract<SampleAction>>(
-        [
-          { type: 'start' },
-          { type: 'end' }
-        ],
-        baseContract
-      )
+      validatePipeline<SampleAction, StablyContract<SampleAction>>([{ type: 'start' }, { type: 'end' }], baseContract)
     );
   });
 });
