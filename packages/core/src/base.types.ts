@@ -1,4 +1,4 @@
-// src/base.ts
+// src/base.types.ts
 
 // Minimal base so domain actions always have a type tag.
 // Domains extend this with their own fields.
@@ -19,3 +19,4 @@ export type StablyGenerator<TActions extends readonly StablyAction<StablyBaseAct
 // A convenience alias for “the concrete pipeline instance”
 // (a validated list of actions for a specific run).
 export type PipelineInstance<TAction extends StablyBaseAction = StablyBaseAction> = readonly StablyAction<TAction>[];
+
