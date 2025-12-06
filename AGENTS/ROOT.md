@@ -11,6 +11,39 @@ Everything below assumes that separation of concerns is preserved.
 
 ---
 
+## 0. Protocol Loading Requirement
+
+Before performing **any** task in this repository — including analysis, code generation, refactors, test creation, dependency updates, or pull-request operations — agents **must** load and internalize all Stably protocol documents. This ensures deterministic behavior, prevents drift, and provides the full operational context before any modifications occur.
+
+Agents must perform the following steps in order:
+
+1. **Read this file first** (`AGENTS/ROOT.md`).  
+2. **Then read the complete set of protocol files in the `/AGENTS` directory**, including:
+
+   - `AGENTS/CODEGEN.md` — Code generation rules, test conventions, and allowed refactor scope  
+   - `AGENTS/SCOPE.md` — Package, domain, and file-level boundaries  
+   - `AGENTS/PR.CREATE.md` — Protocol for automated pull-request creation  
+   - `AGENTS/PR.REVIEW.md` — Protocol for reviewing diffs and enforcing safety rules  
+   - `AGENTS/DEPS.md` — Dependency management and upgrade constraints  
+   - `AGENTS/ESCALATION.md` — When and how agents must stop and escalate  
+   - `AGENTS/SECURITY.md` — Security posture and required safety checks for automated agents  
+
+3. **Acknowledge and abide by all constraints** before performing any analysis or code modification.  
+4. **Refuse or halt tasks** that would violate any rule defined across these documents.
+
+Agents must not proceed with any repository modification until *all* documents listed above have been read and incorporated into the agent’s working instructions.
+
+This requirement ensures:
+
+- deterministic, predictable behavior  
+- strict enforcement of architectural and operational guardrails  
+- correct handling of refactors, tests, dependencies, and PR flows  
+- alignment with security, scope, and escalation constraints  
+
+Failure to load these documents constitutes a protocol violation.
+
+---
+
 ## 1. Scope and Intent
 
 Stably is designed to support **agentic systems** that:
@@ -276,3 +309,4 @@ When extending Stably (or building on top of it):
   * what must never change
 
 If a proposed change conflicts with this document, the conflict should be made explicit and resolved **before** any code is merged.
+
