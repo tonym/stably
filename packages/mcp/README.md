@@ -255,7 +255,7 @@ A canonical MCP-only orchestrator loop mirrors the examples in `@stably/core`:
 
 3. **Optionally validate individual actions**
 
-   For dynamically generated or user-supplied actions, call `stably.validate_action` as a guard.
+   Orchestrators typically call stably.validate_action inside the pipeline execution loop, after each next() step, to structurally guard actions before delegating them to workers.
 
 4. **Generate the deterministic sequence**
 
