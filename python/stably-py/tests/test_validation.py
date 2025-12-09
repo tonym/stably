@@ -110,3 +110,18 @@ def test_create_validator_assert_valid_pipeline_raises_on_invalid() -> None:
         error_raised = True
 
     assert error_raised is True
+
+def test_create_validator_assert_valid_action_raises_on_invalid() -> None:
+    contract = _demo_contract()
+    validator = create_validator(contract)
+
+    invalid_action: Action = {"type": "x", "payload": {}}
+
+    error_raised = False
+    try:
+        validator.assert_valid_action(invalid_action)
+    except ValidationError:
+        error_raised = True
+
+    assert error_raised is True
+
