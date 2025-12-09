@@ -229,12 +229,10 @@ import {
   type StablyGenerator
 } from 'stably-ts';
 
-import type {
-  uiCoreAction,
-  uiCorePipelineContract
+import {
+  type UICoreAction,
+  uiCoreContract
 } from 'ui-core';
-
-declare const uiCoreContract: UICorePipelineContract;
 
 // 1. Build a pipeline instance
 const actions: StablyAction<UICoreAction>[] = [
