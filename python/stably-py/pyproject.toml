@@ -16,3 +16,10 @@ authors = [
 [project.urls]
 Homepage = "https://github.com/tonym/stably"
 Source = "https://github.com/tonym/stably"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
