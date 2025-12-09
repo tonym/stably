@@ -1,211 +1,222 @@
 # SCOPE Protocol
-This document defines **where automated agents may operate** within the Stably repository and the **strict boundaries** they must not cross.
-It extends `/AGENTS/ROOT.md`, `/AGENTS/CODEGEN.md`, `/AGENTS/PR.CREATE.md`, and `/AGENTS/PR.REVIEW.md`.
-If any rule in this file conflicts with ROOT, ROOT prevails.
 
-Stably’s architecture depends on **narrow, predictable change surfaces**.
-This protocol ensures agents modify only what is safe, intentional, and structurally coherent.
+This document defines **where automated agents may operate**, **what boundaries they may not cross**, and **how domain separation is preserved** across the Stably repository.
+
+It inherits from `ROOT.md`.  
+If any rule here appears to conflict with ROOT, **ROOT.md wins**.
+
+Stably’s architectural safety depends on **narrow, predictable change surfaces**.  
+Scope is the mechanism that prevents drift, protects substrate purity, and keeps polyglot implementations aligned.
 
 ---
 
 ## 1. Purpose of SCOPE
-The purpose of this protocol is to:
 
-- Define *exactly which directories and files* agents may modify
-- Define which areas are *completely forbidden*
-- Prevent cross-domain or multi-intent changes
-- Keep code edits narrow, deterministic, and auditable
-- Protect Stably’s minimal surface area and architectural invariants
+This protocol exists to:
 
-**Scope is where drift prevention begins.**
+- Define *exactly which directories and files* agents are permitted to modify  
+- Define *which areas are strictly forbidden*  
+- Prevent cross-domain or multi-intent PRs  
+- Maintain deterministic substrate behavior across TypeScript and Python  
+- Ensure updates remain local, minimal, and intentional  
+- Protect Stably’s conceptual boundaries inside the broader Prism architecture  
 
----
-
-## 2. Allowed Edit Zones
-Agents may only modify files when explicitly instructed or when required by the intent of the PR.
-
-### 2.1 UI Package (`packages/stably-ts`)
-Agents **MAY** modify:
-
-- `src/*.ts` — pure functional core logic
-- `src/types/*.ts` — type definitions
-- `src/validation/*.ts` — structural validator logic
-- `src/generator/*.ts` — generator helpers
-- `README.md` — only when public API behavior changes
-- Adjacent test files (`*.test.ts`) directly tied to changed code
-
-All modifications must follow:
-
-- purity and determinism
-- immutability
-- structural-only validation rules
-- no domain semantics or side effects
-
-### 2.2 Root Documentation
-Agents **MAY** modify:
-
-- `/AGENTS/*.md` — only when documenting new constraints or protocols
-- `/README.md` — only when public behavior changes
-
-### 2.3 Configuration Files
-Agents **MAY** update:
-
-- `tsconfig.json`
-- linting / formatting configs
-- build metadata
-
-…but **only** when the change is required to support a valid, narrow PR intent.
-Config updates MUST NOT accompany code changes unless necessary.
+**Scope is the first line of defense against architectural drift.**
 
 ---
 
-## 3. Forbidden Edit Zones
-Agents must **NOT** modify the following under any circumstances unless explicitly instructed by a human:
+## 2. Stably Domains
 
-### 3.1 Contract Definitions
-Stably does **not** own domain contracts.
+Stably is composed of two runtime substrates and their associated test/config surfaces:
 
-Agents MUST NOT edit:
+1. **`packages/stably-ts`** — TypeScript substrate  
+2. **`python/stably-py`** — Python substrate
 
-- external domain repositories
-- consumer-facing contract files
-- example domain contracts except when explicitly told to create or update scaffolding
+Both must remain:
 
-### 3.2 Orchestrator or Worker Logic
-Agents MUST NOT modify:
+- deterministic  
+- pure  
+- domain-agnostic  
+- structurally equivalent in conceptual behavior  
+- free of side effects, I/O, semantics, or environment coupling  
 
-- orchestrator implementations
-- worker/MCP integration code
-- eval logic
+Agents must treat these two packages as **parallel leaves** in the dependency DAG.
 
-These are outside Stably’s scope and belong to consuming systems.
-
-### 3.3 Build or Repository Plumbing
-Agents MUST NOT edit:
-
-- GitHub workflows
-- CI/CD configuration
-- package publishing scripts
-- versioning automation
-
-Unless specifically instructed.
-
-### 3.4 Multi-Domain or Cross-Package Changes
-Agents may not modify more than one package unless:
-
-- the human explicitly directs the change,
-- the change is mechanical (e.g., renaming a symbol across files), AND
-- it remains within a single conceptual PR intent.
-
-### 3.5 Unrelated Documentation
-Agents may not update:
-
-- wiki pages
-- consumer docs
-- examples unrelated to the PR purpose
-
-No opportunistic or speculative edits.
+No runtime or build-time dependency may exist between them.
 
 ---
 
-## 4. Scope Rules for Tests
-Agents may only modify tests that correspond to changed code.
+## 3. Allowed Edit Zones
 
-They MUST NOT:
+Agents may modify files **only when explicitly instructed** or when a change is required by the narrow scope of the task.
 
-- update unrelated tests
-- reorganize folders
-- add new test suites beyond the PR’s intent
+### 3.1 `packages/stably-ts` (TypeScript substrate)
 
-Tests exist to reflect code changes, not vice-versa.
+Allowed:
 
-### 4.1 Regression test scope
+- `src/*.ts` — pure core logic  
+- `src/types/*.ts` — structural type definitions  
+- `src/validation/*.ts` — structural validators  
+- `src/generator/*.ts` — deterministic generator logic  
+- Adjacent test files when directly tied to modified code  
+- `README.md` — only when public API surface changes  
 
-- Test changes are in scope only when they:
-  - Directly exercise the behavior this task is fixing or adding, and
-  - Are located in the same logical package/domain as the code change.
-- It is acceptable for a focused regression test to target previously untested code **when** the test exists solely to reproduce or guard the bug being fixed.
-- Any broader test additions or refactors remain out of scope and MUST trigger escalation under AGENTS/ESCALATION.md.
+Changes must preserve:
 
----
+- purity  
+- determinism  
+- immutability  
+- contract-driven structural constraints  
 
-## 5. Scope of Refactors
-Refactors are **forbidden** unless explicitly directed by a human.
+### 3.2 `python/stably-py` (Python substrate)
 
-Refactor includes:
+Allowed:
 
-- renaming functions
-- reorganizing files
-- deduplicating helpers
-- rewriting types
-- structural movement of modules
+- `src/stably/*.py` — core Python substrate logic  
+- `tests/*.py` — only for directly related modifications  
+- `pyproject.toml` — only for requirements or minimal tool adjustments  
+- `README.md` — only when API surface changes  
 
-Agents MUST treat any unrequested refactor as out of scope.
+Changes must:
 
----
+- mirror TS substrate conceptual behavior  
+- keep runtime dependencies empty/minimal and pure  
+- avoid semantics or environment coupling  
 
-## 6. Single-Intent Editing Requirement
-Everything an agent edits must satisfy the rule:
+### 3.3 Root-Level Documentation
 
-> **One PR = One Intent = One Change Surface**
+Agents may modify:
 
-Agents MUST NOT:
+- `/AGENTS/*.md` — protocol layer definitions  
+- `/README.md` — project-level API or architecture updates  
 
-- combine bugfixes with features
-- update documentation unrelated to the code change
-- batch multiple small improvements
-- include cleanup edits
+Agents may never modify AGENTS protocols unless explicitly instructed.
 
-If the agent detects multiple potential change streams, it MUST escalate (see ESCALATION protocol).
+### 3.4 Configuration Files
 
----
+Allowed **only when required by the task**, and only minimal updates:
 
-## 7. Size-Based Scope Enforcement
-Scope is tightly correlated to PR size:
+- `tsconfig.*.json`  
+- linting/formatting configs  
+- Python tooling configs (`pyproject.toml`, `.flake8`, etc.)  
+- Monorepo orchestration configs (e.g., `pnpm-workspace.yaml`)  
 
-- **Preferred:** < 300 changed lines
-- **Maximum:** < 1000 changed lines (unless instructed otherwise)
-
-Agents MUST treat exceeding these limits as a scope violation.
-
-Large diffs suggest drift, ambiguity, or multi-intent behavior.
+Configuration updates must not accompany unrelated code changes.
 
 ---
 
-## 8. Drift Detection
-Agents must treat any of the following as drift and therefore out of scope:
+## 4. Forbidden Edit Zones
 
-- touching orchestrator or worker code
-- adding semantics to the core
-- expanding Stably’s API surface
-- embedding domain logic into contracts
-- modifying behavior of `generate`, `validatePipeline`, or `validateAction` without explicit instruction
-- removing test determinism
-- renaming foundational types (`StablyAction`, `StablyContract`, etc.)
+Unless explicitly instructed by a human, agents must **NOT** modify:
 
-Drift MUST trigger escalation.
+### 4.1 Domain Code Outside Stably
+
+Forbidden:
+
+- Any folder under `/packages/*` except `packages/stably-ts`  
+- Any folder under `/python/*` except `python/stably-py`  
+- PromptUI, orchestrator code, domain workers, MCP tools  
+- Any file that introduces semantics, behavior, I/O, or nondeterminism  
+
+### 4.2 GitHub Infrastructure
+
+Forbidden:
+
+- `.github/workflows/*`  
+- repository-level CI/CD definitions  
+- security policy files not explicitly assigned  
+- release automation  
+
+### 4.3 Build, Release, or Dependency Infrastructure
+
+Forbidden unless explicitly authorized:
+
+- `package.json` at the repo root  
+- `pnpm-lock.yaml`  
+- Node dependency trees outside stably-ts  
+- Python dependency trees outside stably-py  
+
+### 4.4 Cross-Language Integration
+
+Agents must not:
+
+- cause TS substrate to depend on Python substrate  
+- cause Python substrate to depend on TS substrate  
+- introduce shared build tooling that couples the two  
+- merge conceptual models across the languages  
+
+Each substrate must remain a **standalone leaf module**.
 
 ---
 
-## 9. When Scope Is Uncertain
-If an agent cannot determine whether a file is in scope, it MUST:
+## 5. Polyglot Symmetry Enforcement
 
-1. **Stop**
-2. **Ask for human clarification**, or
-3. **Escalate according to AGENTS/ESCALATION.md** (when available)
+Stably’s TS and Python substrates must remain:
 
-Ambiguity is not permission.
+- structurally aligned  
+- API-aligned  
+- semantically equivalent at the structural level  
+
+Agents must ensure:
+
+- no API is added to one substrate without explicit instruction to coordinate parity  
+- no validator/generator behavior diverges  
+- no new contract field is introduced unilaterally  
+
+### What fails
+
+- Adding `validate_contract()` to Python but not TS  
+- Introducing side-effect guards in TS but not Python  
+- Changing iteration or error-shape semantics unequally  
+
+### What works
+
+- Parallel updates where logic is purely structural  
+- Tests ensuring equivalent behavior  
+- Documentation clarifying substrate symmetry  
 
 ---
 
-## 10. Summary
-**Scope defines the safe boundaries of agent behavior.**
-Agents must operate only where allowed, modify only what is necessary, and avoid all opportunistic or ambiguous edits.
-Narrow scope ensures Stably remains:
+## 6. Multi-Intent Restrictions
 
-- deterministic
-- pure
-- structurally minimal
-- predictable across time
+Agents must limit every PR or update to **one intent only**, such as:
 
-If any uncertainty arises, agents MUST escalate rather than guess.
+- “Add contract validation rule”  
+- “Refactor core generator implementation”  
+- “Update documentation”  
+- “Add missing test coverage”  
+
+Forbidden:
+
+- Changing TS and Python substrates *and* build configs *and* documentation in one PR  
+- Updates that alter both domain logic and infrastructure  
+- Co-mingling dependency changes with functional refactors  
+
+When in doubt, agents must **split the work** or **escalate**.
+
+---
+
+## 7. Summary (Define → Fail → Work)
+
+### Define  
+Stably is composed of two pure, deterministic substrates—TS and Python—each a standalone leaf module in the Prism architecture.
+
+### Show what fails  
+- Cross-language dependencies  
+- Side effects, semantics, or nondeterminism  
+- Multi-intent PRs  
+- Expanding substrate responsibilities  
+- Editing forbidden domains  
+
+### Show what works  
+- Narrow, structural updates  
+- Deterministic logic in isolated substrate modules  
+- Documentation updates when explicitly requested  
+- Maintaining TS/Python conceptual symmetry  
+- Escalation when boundaries are unclear  
+
+---
+
+Agents must treat SCOPE.md as a binding contract.  
+If a change may violate scope, the correct action is:  
+**stop, refuse, escalate, and request clarification.**
