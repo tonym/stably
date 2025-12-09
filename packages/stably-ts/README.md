@@ -1,7 +1,9 @@
-# @stably/core
+# stably-ts
 
 **Stably** is a small, pure functional substrate for building **deterministic, contract-driven pipelines**.
 It is domain-agnostic, side-effect free, and designed to serve as the *structural core* of agent-orchestrated systems—particularly those that validate, execute, and repair workflows dynamically.
+
+This DOM-resident package was previously named `@stably/core`, and continues to provide the same deterministic runtime in a client-only context.
 
 Stably provides three foundational capabilities:
 
@@ -28,11 +30,11 @@ Stably does **not** interpret semantics, perform side effects, or know anything 
 ## Installation
 
 ```bash
-pnpm add @stably/core
+pnpm add stably-ts
 # or
-npm install @stably/core
+npm install stably-ts
 # or
-yarn add @stably/core
+yarn add stably-ts
 ```
 
 ---
@@ -225,14 +227,12 @@ import {
   createValidator,
   type StablyAction,
   type StablyGenerator
-} from '@stably/core';
+} from 'stably-ts';
 
-import type {
-  uiCoreAction,
-  uiCorePipelineContract
+import {
+  type UICoreAction,
+  uiCoreContract
 } from 'ui-core';
-
-declare const uiCoreContract: UICorePipelineContract;
 
 // 1. Build a pipeline instance
 const actions: StablyAction<UICoreAction>[] = [

@@ -15,8 +15,7 @@
     "noImplicitAny": true,
     "outDir": "dist",
     "paths": {
-      "@stably/core": ["packages/core/dist"],
-      "@stably/mcp": ["packages/mcp/dist"]
+      "stably-ts": ["packages/stably-ts/dist"]
     },
     "skipLibCheck": true,
     "strict": true,

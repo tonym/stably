@@ -16,7 +16,7 @@ This protocol applies whenever an automated agent is asked to:
 
 - Create or edit source files (TypeScript, JavaScript, configuration, tests, examples, etc.).
 - Generate or refactor documentation that describes code-level behavior.
-- Propose changes to the `@stably/core` runtime or its surrounding tooling.
+- Propose changes to the `stably-ts` runtime or its surrounding tooling.
 
 It **does not** change Stably’s runtime semantics. Stably remains:
 
@@ -37,7 +37,7 @@ When generating or editing code in this repo, agents must optimize for:
 
    - No side effects in core.
    - No hidden state.
-   - No domain-specific semantics in `@stably/core`.
+   - No domain-specific semantics in `stably-ts`.
 
 2. **Determinism and predictability**
 
@@ -47,7 +47,7 @@ When generating or editing code in this repo, agents must optimize for:
 3. **Minimal, composable APIs**
 
    - Prefer small, orthogonal primitives over large frameworks.
-   - Keep `@stably/core` narrow and focused.
+   - Keep `stably-ts` narrow and focused.
 
 4. **Human-auditable changes**
 
@@ -60,7 +60,7 @@ When generating or editing code in this repo, agents must optimize for:
 
 Agents **must** treat this file as the canonical reference when:
 
-- Generating or editing code in `packages/core`.
+- Generating or editing code in `packages/stably-ts`.
 - Adding or modifying TypeScript types used by Stably.
 - Creating examples or scaffolding that demonstrate Stably usage.
 - Updating build, lint, or test configuration in a way that affects the core runtime.
@@ -71,9 +71,9 @@ If an agent is only editing non-code content (e.g. AGENTS docs, high-level READM
 
 ## 4. Codegen Boundaries
 
-### 4.1 `@stably/core` must remain pure
+### 4.1 `stably-ts` must remain pure
 
-Within `packages/core`:
+Within `packages/stably-ts`:
 
 - ✅ Allowed:
   - Pure functions (`validatePipeline`, `validateAction`, `generate`, `createValidator`, and related helpers).
@@ -86,14 +86,14 @@ Within `packages/core`:
   - Global or mutable singleton state.
   - Domain-specific logic (business rules, MCP-specific behavior, tool invocation).
 
-If a new feature requires any of the above, **it does not belong in `@stably/core`**. It should live in a separate package or consumer repo.
+If a new feature requires any of the above, **it does not belong in `stably-ts`**. It should live in a separate package or consumer repo.
 
 ### 4.2 Contracts and actions stay domain-owned
 
 Codegen agents **must not** move domain semantics into the core runtime.
 
 - Contracts (`StablyContract<...>`) remain **runtime JSON(-like) data** owned by domains.
-- `@stably/core` only knows enough to:
+- `stably-ts` only knows enough to:
   - Check structure against the contract.
   - Produce a generator over an action sequence.
 
@@ -118,7 +118,7 @@ Codegen agents must:
 
 ### 5.2 Style guidelines
 
-Within `packages/core` and related TypeScript:
+Within `packages/stably-ts` and related TypeScript:
 
 - Prefer **functions and types** over classes and inheritance.
 - Favor **immutability**:
@@ -206,7 +206,7 @@ Documentation must be **consistent with the actual behavior** of the code.
 
 ## 7. Tests and Examples
 
-When adding or changing functionality in `packages/core`:
+When adding or changing functionality in `packages/stably-ts`:
 
 - Prefer to **add or update tests** next to the code under test.
 - Tests should:
@@ -224,28 +224,28 @@ When adding or changing functionality in `packages/core`:
 
 All codegen agents MUST follow these testing rules:
 
-1. **One expectation per test**  
-   Each `it(...)` block must contain exactly one assertion.  
+1. **One expectation per test**
+   Each `it(...)` block must contain exactly one assertion.
    This keeps failures isolated and makes intent unambiguous.
 
-2. **Table tests are allowed**  
-   When multiple inputs must be exercised, use table-driven tests:  
-   - Each row represents one test case.  
+2. **Table tests are allowed**
+   When multiple inputs must be exercised, use table-driven tests:
+   - Each row represents one test case.
    - Each row still maps to a single expectation.
 
-3. **Only add or modify tests for code that was generated or changed**  
-   Agents must not update unrelated test files.  
+3. **Only add or modify tests for code that was generated or changed**
+   Agents must not update unrelated test files.
    This enforces PR boundaries and prevents accidental broad edits.
 
-4. **All tests must pass**  
-   Generated code MUST be written such that the full test suite would pass if executed.  
-   Agents must avoid introducing:  
-   - undefined variables  
-   - unused imports  
-   - broken types  
+4. **All tests must pass**
+   Generated code MUST be written such that the full test suite would pass if executed.
+   Agents must avoid introducing:
+   - undefined variables
+   - unused imports
+   - broken types
    - failing logic or regressions
 
-5. **Tests must remain deterministic**  
+5. **Tests must remain deterministic**
    No randomness, time-based behavior, external I/O, or nondeterministic ordering.
 
 These rules ensure that codegen remains safe, reviewable, and tightly scoped to the intended changes.
@@ -278,7 +278,7 @@ All codegen activity must remain aligned with the **role separation** defined in
 Codegen agents must not:
 
 - Collapse multiple roles into one “god object”.
-- Move orchestrator or worker logic into `@stably/core`.
+- Move orchestrator or worker logic into `stably-ts`.
 - Make Stably aware of eval results or external system state.
 
 ---
@@ -287,7 +287,7 @@ Codegen agents must not:
 
 To preserve the integrity of this repository and the Stably core, codegen agents must **not**:
 
-1. **Introduce side effects into `@stably/core`**
+1. **Introduce side effects into `stably-ts`**
 
    - No file system, network, time, randomness, or process-level behavior.
 
