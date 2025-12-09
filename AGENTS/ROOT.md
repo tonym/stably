@@ -1,6 +1,6 @@
 # Stably AGENTS Root Protocol
 
-This document defines how **agents** (orchestrators, workers, and tooling) are expected to use Stably. It does *not* change the runtime behavior of `@stably/core`; instead, it describes the rules and tradeoffs that keep Stably-based systems deterministic and safe.
+This document defines how **agents** (orchestrators, workers, and tooling) are expected to use Stably. It does *not* change the runtime behavior of `stably-ts` (formerly `@stably/core`); instead, it describes the rules and tradeoffs that keep Stably-based systems deterministic and safe.
 
 Stably’s role is narrow and intentional:
 
@@ -17,28 +17,28 @@ Before performing **any** task in this repository — including analysis, code g
 
 Agents must perform the following steps in order:
 
-1. **Read this file first** (`AGENTS/ROOT.md`).  
+1. **Read this file first** (`AGENTS/ROOT.md`).
 2. **Then read the complete set of protocol files in the `/AGENTS` directory**, including:
 
-   - `AGENTS/CODEGEN.md` — Code generation rules, test conventions, and allowed refactor scope  
-   - `AGENTS/SCOPE.md` — Package, domain, and file-level boundaries  
-   - `AGENTS/PR.CREATE.md` — Protocol for automated pull-request creation  
-   - `AGENTS/PR.REVIEW.md` — Protocol for reviewing diffs and enforcing safety rules  
-   - `AGENTS/DEPS.md` — Dependency management and upgrade constraints  
-   - `AGENTS/ESCALATION.md` — When and how agents must stop and escalate  
-   - `AGENTS/SECURITY.md` — Security posture and required safety checks for automated agents  
+   - `AGENTS/CODEGEN.md` — Code generation rules, test conventions, and allowed refactor scope
+   - `AGENTS/SCOPE.md` — Package, domain, and file-level boundaries
+   - `AGENTS/PR.CREATE.md` — Protocol for automated pull-request creation
+   - `AGENTS/PR.REVIEW.md` — Protocol for reviewing diffs and enforcing safety rules
+   - `AGENTS/DEPS.md` — Dependency management and upgrade constraints
+   - `AGENTS/ESCALATION.md` — When and how agents must stop and escalate
+   - `AGENTS/SECURITY.md` — Security posture and required safety checks for automated agents
 
-3. **Acknowledge and abide by all constraints** before performing any analysis or code modification.  
+3. **Acknowledge and abide by all constraints** before performing any analysis or code modification.
 4. **Refuse or halt tasks** that would violate any rule defined across these documents.
 
 Agents must not proceed with any repository modification until *all* documents listed above have been read and incorporated into the agent’s working instructions.
 
 This requirement ensures:
 
-- deterministic, predictable behavior  
-- strict enforcement of architectural and operational guardrails  
-- correct handling of refactors, tests, dependencies, and PR flows  
-- alignment with security, scope, and escalation constraints  
+- deterministic, predictable behavior
+- strict enforcement of architectural and operational guardrails
+- correct handling of refactors, tests, dependencies, and PR flows
+- alignment with security, scope, and escalation constraints
 
 Failure to load these documents constitutes a protocol violation.
 
@@ -120,7 +120,7 @@ All agents that use Stably must respect the following core rules:
      * pure
      * deterministic
      * side-effect free
-   * Agents **must not** request new side effects or stateful behavior inside `@stably/core`.
+   * Agents **must not** request new side effects or stateful behavior inside `stably-ts`.
 
 5. **Contracts Are Not Self-Mutating**
 
@@ -277,7 +277,7 @@ To keep Stably-based systems stable over time:
 
 To preserve Stably’s integrity, agents **must not**:
 
-* Ask for side effects inside `@stably/core`.
+* Ask for side effects inside `stably-ts`.
 * Treat Stably as a workflow engine, task runner, or job scheduler.
 * Modify domain contracts dynamically at runtime.
 * Skip `validatePipeline()` before calling `generate()`.
@@ -309,4 +309,3 @@ When extending Stably (or building on top of it):
   * what must never change
 
 If a proposed change conflicts with this document, the conflict should be made explicit and resolved **before** any code is merged.
-

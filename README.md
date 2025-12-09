@@ -55,9 +55,9 @@ Stably remains deterministic and side-effect free.
 
 ---
 
-## Core Package: `@stably/core`
+## UI Package: `stably-ts` (formerly `@stably/core`)
 
-The core runtime lives in [`packages/core`](./packages/core).
+The DOM-resident runtime lives in [`packages/stably-ts`](./packages/stably-ts).
 
 It exposes three primitives:
 
@@ -86,7 +86,7 @@ No filtering, no branching, no side effects.
 
 Ergonomic helper to preload a contract and reuse validators.
 
-See the [core README](./packages/core/README.md) for detailed examples and typing guidance.
+See the [stably-ts README](./packages/stably-ts/README.md) for detailed examples and typing guidance.
 
 ---
 
@@ -139,7 +139,7 @@ Stably is currently focused on:
 
 Upcoming work includes:
 
-* A Stably MCP server package
+* A Python-based MCP server that complements the DOM-native `stably-ts` package
 * Example orchestrators using Stably as the structural substrate
 * A suite of eval helpers (in a separate package)
 
