@@ -28,8 +28,17 @@ class StructuralRules(TypedDict, total=False):
     # Action types that are permitted in this pipeline.
     allowed_action_types: list[str]
 
-    # Step IDs that must appear at least once in a valid pipeline.
+    # Action types that must appear at least once in a valid pipeline.
+    # Despite the name, these are "required steps" in the sense of the canon,
+    # but we represent them via action.type identifiers.
     required_steps: list[str]
+
+    # Allowed transitions between successive action types. A mapping of:
+    #   current_action_type -> list of allowed next action types
+    #
+    # If a current type is present as a key, and the next type is not in the
+    # associated list, the transition is considered illegal.
+    allowed_transitions: dict[str, list[str]]
 
 
 class StepDefinition(TypedDict):
