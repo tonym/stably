@@ -27,3 +27,13 @@ dev = ["pytest>=8.0.0"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+]
+
+
+
