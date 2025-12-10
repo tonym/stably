@@ -10,15 +10,14 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Tony M." }]
+dependencies = [
+    "mcp>=0.1.0",
+    "stably-py @ git+https://github.com/tonym/stably.git@feature/stably-mcp#subdirectory=python/stably-py"
+]
 
 [project.urls]
 Homepage = "https://github.com/tonym/stably"
 Source = "https://github.com/tonym/stably"
-
-dependencies = [
-    "mcp>=0.1.0",
-    "stably-py>=0.1.0"
-]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0"]
