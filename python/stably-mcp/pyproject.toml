@@ -15,9 +15,15 @@ authors = [{ name = "Tony M." }]
 Homepage = "https://github.com/tonym/stably"
 Source = "https://github.com/tonym/stably"
 
+dependencies = [
+    "mcp>=0.1.0",
+    "stably-py>=0.1.0"
+]
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
