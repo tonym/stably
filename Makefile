@@ -17,3 +17,17 @@ python-test-core:
 # Install stably-py in editable mode with dev dependencies
 python-install-core:
 	cd python/stably-py && pip install -e .[dev]
+
+.PHONY: stably-mcp-install stably-mcp-test stably-mcp-server
+
+# Install stably-mcp in editable mode with dev extras (pytest, etc.)
+stably-mcp-install:
+	cd python/stably-mcp && pip install -e .[dev]
+
+# Run the stably-mcp test suite
+stably-mcp-test:
+	cd python/stably-mcp && pytest
+
+# Run the stably-mcp MCP server
+stably-mcp-server:
+	cd python/stably-mcp && python -m stably_mcp.server
