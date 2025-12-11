@@ -1,6 +1,6 @@
 # Stably
 
-(Stably is still pre-release and is not yet available on NPM or PiPI)
+(Stably is pre-release and is not yet available on NPM or PiPI)
 
 **Stably** is a minimal, pure functional substrate for building **deterministic, contract-driven pipelines** across languages and runtimes.
 
@@ -119,4 +119,5 @@ Stably is stable enough for real systems and agentic pipelines, but intentionall
 
 MIT © 2025
 Stably is open source and free to use in commercial and non-commercial systems.
+
 
