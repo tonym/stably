@@ -14,6 +14,25 @@ from stably import (
 )
 
 
+def _contract_without_required_steps(contract: Contract) -> Contract:
+    """
+    Create a shallow copy of the contract without required steps.
+
+    This lets us validate prefixes of pipelines (to enforce transitions)
+    without treating missing required steps as fatal until the caller
+    explicitly validates the full pipeline.
+    """
+    structural = contract.get("structural")
+    if not structural or "required_steps" not in structural:
+        return contract
+
+    trimmed = dict(contract)
+    trimmed_structural = dict(structural)
+    trimmed_structural.pop("required_steps", None)
+    trimmed["structural"] = trimmed_structural
+    return trimmed  # type: ignore[return-value]
+
+
 @dataclass
 class PipelineSession:
     """
@@ -83,10 +102,15 @@ class PipelineSession:
                 return check
             candidate.append(action)
 
-        pipeline_result = validate_pipeline(candidate, self.contract)
-        if pipeline_result["ok"]:
-            self.actions = candidate
-        return pipeline_result
+        partial_contract = _contract_without_required_steps(self.contract)
+        partial_result = validate_pipeline(candidate, partial_contract)
+        if not partial_result["ok"]:
+            return partial_result
+
+        self.actions = candidate
+        # Surface full-pipeline validity so callers know when the pipeline
+        # still needs more required steps.
+        return validate_pipeline(candidate, self.contract)
 
     def clear(self) -> None:
         """
