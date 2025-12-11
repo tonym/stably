@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from mcp.server import Server
-from mcp.types import TextContent
+from mcp.server import FastMCP
 
 from stably import (
     validate_pipeline,
@@ -10,13 +9,13 @@ from stably import (
 )
 
 
-server = Server("stably-mcp")
+app = FastMCP(name="stably-mcp")
 
 
 # --------------------------
 # validatePipeline Tool
 # --------------------------
-@server.tool()
+@app.tool()
 def validatePipeline(actions: list[dict], contract: dict):
     """
     Validate an entire pipeline instance against a Stably contract.
@@ -30,7 +29,7 @@ def validatePipeline(actions: list[dict], contract: dict):
 # --------------------------
 # validateAction Tool
 # --------------------------
-@server.tool()
+@app.tool()
 def validateAction(action: dict, contract: dict):
     """
     Validate a single action against the contract.
@@ -44,7 +43,7 @@ def validateAction(action: dict, contract: dict):
 # --------------------------
 # generate Tool
 # --------------------------
-@server.tool()
+@app.tool()
 def generatePipeline(actions: list[dict]):
     """
     Deterministically generate the full pipeline sequence.
@@ -67,7 +66,7 @@ def run():
 
     Stateless: every call is isolated.
     """
-    server.run()
+    app.run()
 
 
 if __name__ == "__main__":
