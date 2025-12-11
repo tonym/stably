@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [{ name = "Tony M." }]
 dependencies = [
     "mcp>=0.1.0",
-    "stably-py @ git+https://github.com/tonym/stably.git@feature/stably-mcp#subdirectory=python/stably-py"
+    "stably-py @ ../stably-py"
 ]
 
 [project.urls]

@@ -83,9 +83,10 @@ class PipelineSession:
                 return check
             candidate.append(action)
 
-        # All good: commit the new sequence
-        self.actions = candidate
-        return validate_pipeline(self.actions, self.contract)
+        pipeline_result = validate_pipeline(candidate, self.contract)
+        if pipeline_result["ok"]:
+            self.actions = candidate
+        return pipeline_result
 
     def clear(self) -> None:
         """
